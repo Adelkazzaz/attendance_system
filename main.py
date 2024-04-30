@@ -2,10 +2,9 @@ import cv2
 from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import filedialog
+from openpyxl import Workbook
 from best_frame import choose_best_frame
 from simpleFaceRec import SimpleFacerec
-
-
 
 class FaceRecognitionApp:
     def __init__(self, root):
@@ -42,7 +41,7 @@ class FaceRecognitionApp:
         self.stop_attendance_button = tk.Button(self.frame_buttons, text="Stop Attendance", command=self.stop_attendance, state=tk.DISABLED, bg="#C850C0", fg="white", padx=10, pady=5)  # Custom-styled button
         self.stop_attendance_button.pack(side=tk.LEFT, padx=10)
 
-        self.copy_names_button = tk.Button(self.frame_buttons, text="Copy Names", command=self.copy_names, state=tk.DISABLED, bg="#C850C0", fg="white", padx=10, pady=5)  # Custom-styled button
+        self.copy_names_button = tk.Button(self.frame_buttons, text="Save Names to Excel", command=self.save_names_to_excel, state=tk.DISABLED, bg="#C850C0", fg="white", padx=10, pady=5)  # Custom-styled button
         self.copy_names_button.pack(side=tk.LEFT, padx=10)
 
         self.attendees_label = tk.Label(root, text="Attendance: ", bg="lightgray", padx=10, pady=5)  # Custom-styled label
@@ -109,25 +108,44 @@ class FaceRecognitionApp:
         self.stop_attendance_button.config(state=tk.DISABLED)
         self.copy_names_button.config(state=tk.NORMAL)
 
-    def copy_names(self):
-        names_str = ", ".join(self.attendance_list)
-        self.root.clipboard_clear()
-        self.root.clipboard_append(names_str)
-
+    def save_names_to_excel(self):
+        workbook = Workbook()
+        sheet = workbook.active
+        sheet.append(["Names"])
+        for name in self.attendance_list:
+            sheet.append([name])
+    
+        excel_filename = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Excel files", "*.xlsx")])
+        if excel_filename:
+            workbook.save(excel_filename)
     def add_student(self):
-        # Open a file dialog to choose the video
-        video_path = filedialog.askopenfilename(title="Select Video File", filetypes=[("Video files", "*.mp4")])
-        if not video_path:
+        # Open a file dialog to choose the file
+        file_path = filedialog.askopenfilename(title="Select File", filetypes=[("Video files", "*.mp4"), ("Image files", "*.jpg;*.jpeg;*.png")])
+        if not file_path:
             return  # User canceled the selection
 
         # Get student name and ID from entry fields
         student_name = self.name_entry.get()
         student_id = self.id_entry.get()
 
-        # Call the script to capture the best frame
-        choose_best_frame(video_path, student_id)
-
-        # Add logic here to handle the captured photo and student name/ID
+        # Check if the selected file is a video
+        if file_path.endswith((".mp4")):
+            # Call the script to capture the best frame
+            choose_best_frame(file_path, student_id)
+            # Clear the entry fields
+        else:  # If it's an image
+            # Perform face recognition directly on the image
+            img = cv2.imread(file_path)
+            student_encoding = self.sfr.detect_unknown_face(img)
+            if student_encoding is not None:
+                # Add logic here to handle the captured encoding and student name/ID
+                pass
+                # Clear the entry fields
+            else:
+                print("No face found in the selected image.")
+        # Clear the entry fields
+        self.name_entry.delete(0, tk.END)
+        self.id_entry.delete(0, tk.END)
 
     def update_attendees_label(self):
         names_str = ", ".join(self.attendance_list)
