@@ -97,7 +97,7 @@ class FaceRecognitionApp:
 
     def switch_camera(self):
         self.cap.release()
-        self.current_camera_index = (self.current_camera_index + 1) % 10
+        self.current_camera_index = (self.current_camera_index + 1) % 3
         self.cap = cv2.VideoCapture(self.current_camera_index)
 
     def start_attendance(self):
