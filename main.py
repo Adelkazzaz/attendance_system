@@ -5,6 +5,8 @@ from tkinter import filedialog
 from openpyxl import Workbook
 from best_frame import choose_best_frame
 from simpleFaceRec import SimpleFacerec
+from database import *
+import sqlite3
 
 class FaceRecognitionApp:
     def __init__(self, root):
@@ -70,8 +72,8 @@ class FaceRecognitionApp:
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         if self.attendance_started:
-            face_locations, face_names = self.sfr.detect_known_faces(frame)
-
+            face_locations, face_id = self.sfr.detect_known_faces(frame)
+            face_names=get_Name_by_id(face_id)
             for name in face_names:
                 if name not in self.attendance_list:
                     self.attendance_list.append(name)
@@ -113,6 +115,7 @@ class FaceRecognitionApp:
         sheet = workbook.active
         sheet.append(["Names"])
         for name in self.attendance_list:
+            
             sheet.append([name])
     
         excel_filename = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Excel files", "*.xlsx")])
@@ -128,21 +131,9 @@ class FaceRecognitionApp:
         student_name = self.name_entry.get()
         student_id = self.id_entry.get()
 
-        # Check if the selected file is a video
-        if file_path.endswith((".mp4")):
-            # Call the script to capture the best frame
-            choose_best_frame(file_path, student_id)
-            # Clear the entry fields
-        else:  # If it's an image
-            # Perform face recognition directly on the image
-            img = cv2.imread(file_path)
-            student_encoding = self.sfr.detect_unknown_face(img)
-            if student_encoding is not None:
-                # Add logic here to handle the captured encoding and student name/ID
-                pass
-                # Clear the entry fields
-            else:
-                print("No face found in the selected image.")
+        choose_best_frame(file_path, student_id)
+        insert_student(student_name, student_id)
+
         # Clear the entry fields
         self.name_entry.delete(0, tk.END)
         self.id_entry.delete(0, tk.END)

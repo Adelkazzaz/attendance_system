@@ -7,7 +7,7 @@ import numpy as np
 class SimpleFacerec:
     def __init__(self, frame_resizing=0.25):
         self.known_face_encodings = []
-        self.known_face_names = []
+        self.known_face_id = []
         self.frame_resizing = frame_resizing
 
     def load_encoding_images(self, images_path):
@@ -26,7 +26,7 @@ class SimpleFacerec:
             
             if img_encoding is not None:
                 self.known_face_encodings.append(img_encoding)
-                self.known_face_names.append(filename)
+                self.known_face_id.append(filename)
         
         print("Encoding images loaded")
 
@@ -60,16 +60,16 @@ class SimpleFacerec:
         face_locations = face_recognition.face_locations(rgb_small_frame)
         face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
 
-        face_names = []
+        face_id = []
         for face_encoding in face_encodings:
             matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
             name = "Unknown"
 
             if True in matches:
                 best_match_index = matches.index(True)
-                name = self.known_face_names[best_match_index]
+                name = self.known_face_id[best_match_index]
 
-            face_names.append(name)
+            face_id.append(name)
 
         face_locations = np.array(face_locations) / self.frame_resizing
-        return face_locations.astype(int), face_names
+        return face_locations.astype(int), face_id
