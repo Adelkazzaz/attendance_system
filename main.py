@@ -74,9 +74,12 @@ class FaceRecognitionApp:
         if self.attendance_started:
             face_locations, face_id = self.sfr.detect_known_faces(frame)
             face_names=get_Name_by_id(face_id)
-            for name in face_names:
+            for face_loc, name in zip(face_locations, face_names):
                 if name not in self.attendance_list:
                     self.attendance_list.append(name)
+                y1, x2, y2, x1 = face_loc[0], face_loc[1], face_loc[2], face_loc[3]
+                cv2.putText(frame, name,(x1, y1 - 10), cv2.FONT_HERSHEY_DUPLEX, 1, (255, 0, 0), 2)
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 4)
 
             self.update_attendees_label()
 
@@ -110,17 +113,21 @@ class FaceRecognitionApp:
         self.stop_attendance_button.config(state=tk.DISABLED)
         self.copy_names_button.config(state=tk.NORMAL)
 
+
     def save_names_to_excel(self):
         workbook = Workbook()
         sheet = workbook.active
-        sheet.append(["Names"])
+        sheet.append(["Name", "ID"])  # Add header row for name and ID
+
         for name in self.attendance_list:
-            
-            sheet.append([name])
-    
+            student_id = get_student_id_by_name(name)  # Assuming you have a function to get student ID by name
+            if student_id:
+                sheet.append([name, student_id])
+
         excel_filename = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Excel files", "*.xlsx")])
         if excel_filename:
             workbook.save(excel_filename)
+
     def add_student(self):
         # Open a file dialog to choose the file
         file_path = filedialog.askopenfilename(title="Select File", filetypes=[("Video files", "*.mp4"), ("Image files", "*.jpg;*.jpeg;*.png")])

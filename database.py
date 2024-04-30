@@ -62,6 +62,20 @@ def get_Name_by_id(face_id):
     conn.close()
     return names
 
+def get_student_id_by_name(name):
+    conn = sqlite3.connect("students.db")
+    c = conn.cursor()
+
+    # Execute SQL query to retrieve student ID by name
+    c.execute("SELECT student_id FROM students WHERE name=?", (name,))
+    student = c.fetchone()  # Fetch the first result
+    conn.close()
+
+    if student:
+        return student[0]  # Return the student ID
+    else:
+        return None  # Return None if student not found
+
 
 def remove_all_students():
     conn = sqlite3.connect("students.db")
