@@ -28,22 +28,22 @@ class FaceRecognitionApp:
         self.frame_buttons = tk.Frame(root)
         self.frame_buttons.pack(side=tk.BOTTOM, pady=10)
 
-        self.quit_button = tk.Button(self.frame_buttons, text="Quit", command=self.quit, bg="#C850C0", fg="white", padx=10, pady=5)  # Custom-styled button
+        self.quit_button = tk.Button(self.frame_buttons, text="Quit", command=self.quit, bg="#C850C0", fg="#000", padx=10, pady=5)  # Custom-styled button
         self.quit_button.pack(side=tk.LEFT, padx=10)
 
-        self.switch_camera_button = tk.Button(self.frame_buttons, text="Switch Camera", command=self.switch_camera, bg="#C850C0", fg="white", padx=10, pady=5)  # Custom-styled button
+        self.switch_camera_button = tk.Button(self.frame_buttons, text="Switch Camera", command=self.switch_camera, bg="#C850C0", fg="#000", padx=10, pady=5)  # Custom-styled button
         self.switch_camera_button.pack(side=tk.LEFT, padx=10)
 
-        self.add_student_button = tk.Button(self.frame_buttons, text="Add Student", command=self.add_student, bg="#C850C0", fg="white", padx=10, pady=5)  # Custom-styled button
+        self.add_student_button = tk.Button(self.frame_buttons, text="Add Student", command=self.add_student, bg="#C850C0", fg="#000", padx=10, pady=5)  # Custom-styled button
         self.add_student_button.pack(side=tk.LEFT, padx=10)
 
-        self.start_attendance_button = tk.Button(self.frame_buttons, text="Start Attendance", command=self.start_attendance, bg="#C850C0", fg="white", padx=10, pady=5)  # Custom-styled button
+        self.start_attendance_button = tk.Button(self.frame_buttons, text="Start Attendance", command=self.start_attendance, bg="#C850C0", fg="#000", padx=10, pady=5)  # Custom-styled button
         self.start_attendance_button.pack(side=tk.LEFT, padx=10)
 
-        self.stop_attendance_button = tk.Button(self.frame_buttons, text="Stop Attendance", command=self.stop_attendance, state=tk.DISABLED, bg="#C850C0", fg="white", padx=10, pady=5)  # Custom-styled button
+        self.stop_attendance_button = tk.Button(self.frame_buttons, text="Stop Attendance", command=self.stop_attendance, state=tk.DISABLED, bg="#C850C0", fg="#000", padx=10, pady=5)  # Custom-styled button
         self.stop_attendance_button.pack(side=tk.LEFT, padx=10)
 
-        self.copy_names_button = tk.Button(self.frame_buttons, text="Save Names to Excel", command=self.save_names_to_excel, state=tk.DISABLED, bg="#C850C0", fg="white", padx=10, pady=5)  # Custom-styled button
+        self.copy_names_button = tk.Button(self.frame_buttons, text="Save Names to Excel", command=self.save_names_to_excel, state=tk.DISABLED, bg="#C850C0", fg="#000", padx=10, pady=5)  # Custom-styled button
         self.copy_names_button.pack(side=tk.LEFT, padx=10)
 
         self.attendees_label = tk.Label(root, text="Attendance: ", bg="lightgray", padx=10, pady=5)  # Custom-styled label
