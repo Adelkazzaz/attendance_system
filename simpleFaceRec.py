@@ -5,10 +5,11 @@ import glob
 import numpy as np
 
 class SimpleFacerec:
-    def __init__(self, frame_resizing=0.25):
+    def __init__(self, frame_resizing=0.25, threshold=0.5):
         self.known_face_encodings = []
         self.known_face_id = []
         self.frame_resizing = frame_resizing
+        self.threshold = threshold
 
     def load_encoding_images(self, images_path):
         """
@@ -62,14 +63,24 @@ class SimpleFacerec:
 
         face_id = []
         for face_encoding in face_encodings:
-            matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
-            name = "Unknown"
+            distances = face_recognition.face_distance(self.known_face_encodings, face_encoding)
+            min_distance_index = np.argmin(distances)
 
-            if True in matches:
-                best_match_index = matches.index(True)
-                name = self.known_face_id[best_match_index]
+            if distances[min_distance_index] <= self.threshold:
+                name = self.known_face_id[min_distance_index]
+            else:
+                name = "Unknown"
 
             face_id.append(name)
 
         face_locations = np.array(face_locations) / self.frame_resizing
         return face_locations.astype(int), face_id
+
+    def set_threshold(self, threshold):
+        """
+        Set the threshold for face recognition.
+        
+        Parameters:
+            threshold (float): Threshold value for face recognition.
+        """
+        self.threshold = threshold

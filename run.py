@@ -16,6 +16,7 @@ class FaceRecognitionApp:
         self.current_camera_index = 0
         self.attendance_started = False
         self.attendance_list = []
+
         
         self.sfr = SimpleFacerec()
         self.sfr.load_encoding_images("faces_database/")
@@ -106,6 +107,7 @@ class FaceRecognitionApp:
         self.stop_attendance_button.config(state=tk.NORMAL)
         self.copy_names_button.config(state=tk.DISABLED)
         self.attendance_list = []
+
 
     def stop_attendance(self):
         self.attendance_started = False

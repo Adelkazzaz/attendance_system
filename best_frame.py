@@ -6,7 +6,7 @@ def choose_best_frame(video_path, face_id):
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
     max_confidence = -1
-    best_face = None
+    best_frame = None
 
     # Skip frames for faster processing
     frame_skip = 5
@@ -31,17 +31,17 @@ def choose_best_frame(video_path, face_id):
                 confidence = w * h
                 if confidence > max_confidence:
                     max_confidence = confidence
-                    best_face = resized_frame[y:y+h, x:x+w].copy()  # Crop the face region
+                    best_frame = frame.copy()  # Save the entire frame
 
         frame_count += 1
 
     cap.release()
 
-    if best_face is not None:
+    if best_frame is not None:
         # Construct the file name with the provided ID
         filename = f"{face_id}.jpg"
         filepath = os.path.join("faces_database", filename)
-        cv2.imwrite(filepath, best_face)
-        print("Best face cropped and saved successfully as:", filename)
+        cv2.imwrite(filepath, best_frame)
+        print("Best frame saved successfully as:", filename)
     else:
         print("Error: No face detected in the video.")
